@@ -12,5 +12,7 @@ Peut être utilisé pour une utilisation temporaire.
 
 ## Prérequis
 
+- [opentofu](https://github.com/opentofu/opentofu/releases)
+
 ## Utilisation
 

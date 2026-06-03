@@ -18,6 +18,7 @@ architecture.drawio
 
 # Terraform
 
+tofu
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
