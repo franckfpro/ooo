@@ -24,17 +24,14 @@ jobs:
         terraform_version: 1.5.0
 
     - name: Terraform Format Check
-      name: Vérification du format (fmt)
       run: terraform fmt -check -recursive
       working-directory: ${{ env.TF_ROOT }}
 
     - name: Terraform Init
-      name: Initialisation (nécessaire pour la validation)
       run: terraform init -backend=false # -backend=false évite d'avoir besoin des accès cloud réels
       working-directory: ${{ env.TF_ROOT }}
 
     - name: Terraform Validate
-      name: Validation de la syntaxe
       run: terraform validate
       working-directory: ${{ env.TF_ROOT }}
 
