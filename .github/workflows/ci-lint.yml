@@ -1,0 +1,72 @@
+name: 'Lint & Validate (Terraform + Ansible)'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # --- JOB TERRAFORM ---
+  terraform-ci:
+    name: 'Terraform Lint & Validate'
+    runs-on: ubuntu-latest
+    env:
+      TF_ROOT: ./infrastructure
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+
+    - name: Terraform Format Check
+      name: Vérification du format (fmt)
+      run: terraform fmt -check -recursive
+      working-directory: ${{ env.TF_ROOT }}
+
+    - name: Terraform Init
+      name: Initialisation (nécessaire pour la validation)
+      run: terraform init -backend=false # -backend=false évite d'avoir besoin des accès cloud réels
+      working-directory: ${{ env.TF_ROOT }}
+
+    - name: Terraform Validate
+      name: Validation de la syntaxe
+      run: terraform validate
+      working-directory: ${{ env.TF_ROOT }}
+
+    - name: Run TFLint
+      uses: github/super-linter/action@v5
+      env:
+        VALIDATE_TERRAFORM_TFLINT: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v4
+      with:
+        tflint_version: v0.48.0
+
+    - name: Run TFLint
+      run: tflint --init && tflint -f compact
+      env:
+        # Optionnel mais recommandé pour éviter le rate-limiting lors du tflint --init
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # --- JOB ANSIBLE (S'exécute en parallèle pour gagner du temps) ---
+  ansible-ci:
+    name: 'Ansible Lint'
+    runs-on: ubuntu-latest
+    env:
+      ANSIBLE_ROOT: ./configuration
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Run Ansible Lint
+      uses: ansible/ansible-lint-action@v6
+      with:
+        path: ${{ env.ANSIBLE_ROOT }}
