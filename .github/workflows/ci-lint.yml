@@ -44,10 +44,13 @@ jobs:
     - name: Setup TFLint
       uses: terraform-linters/setup-tflint@v4
       with:
-        tflint_version: v0.48.0
+        tflint_version: v0.50.0
 
     - name: Run TFLint
-      run: tflint --init && tflint -f compact
+      run: |
+        tflint --init
+        tflint -f compact
+      working-directory: ${{ env.TF_ROOT }}
       env:
         # Optionnel mais recommandé pour éviter le rate-limiting lors du tflint --init
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,6 +67,6 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run Ansible Lint
-      uses: ansible/ansible-lint-action@v6
+      uses: ansible/ansible-lint@v24.2.0
       with:
         path: ${{ env.ANSIBLE_ROOT }}
