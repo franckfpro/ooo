@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   # --- JOB TERRAFORM ---
   terraform-ci:
@@ -36,9 +39,10 @@ jobs:
       working-directory: ${{ env.TF_ROOT }}
 
     - name: Run TFLint
-      uses: github/super-linter/action@v5
+      uses: super-linter/super-linter@v5
       env:
-        VALIDATE_TERRAFORM_TFLINT: true
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: main
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup TFLint
@@ -69,4 +73,4 @@ jobs:
     - name: Run Ansible Lint
       uses: ansible/ansible-lint@v24.2.0
       with:
-        path: ${{ env.ANSIBLE_ROOT }}
+        working_directory: ${{ env.ANSIBLE_ROOT }}
