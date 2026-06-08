@@ -1,0 +1,21 @@
+# openstack.yml
+plugin: openstack.cloud.openstack
+cloud: mon_tenant_openstack
+
+# On demande à OpenStack de créer des groupes basés sur le nom des VMs
+group_by:
+  - status
+
+variables:
+  # Par défaut, Ansible prend l'IP de l'interface (privée ou publique selon la configuration du tenant)
+  ansible_host: interface_ip
+  ansible_user: ubuntu
+
+# C'est ici qu'on applique la logique conditionnelle
+compose:
+  # Si la VM s'appelle "bastion", on n'applique pas de ProxyJump.
+  # Pour toutes les autres VMs, on force le passage par l'IP publique du bastion.
+  ansible_ssh_common_args: >
+    if inventory_hostname != 'bastion' 
+    then '-o ProxyJump=ubuntu@IP_PUBLIQUE_DU_BASTION' 
+    else ''

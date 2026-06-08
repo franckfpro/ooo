@@ -1,0 +1,11 @@
+clouds:
+  mon_tenant_openstack:
+    auth:
+      auth_url: "https://openstack.example.com:5000/v3"
+      username: "votre_utilisateur"
+      password: "votre_mot_de_passe"
+      project_name: "nom_de_votre_projet_ou_tenant"
+      user_domain_name: "Default"
+      project_domain_name: "Default"
+    region_name: "RegionOne"
+    interface: "public"

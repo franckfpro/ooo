@@ -27,7 +27,6 @@ terraform.tfstate.backup
 
 # Ansible
 
-ansible.cfg
 inventory.ini
 .vault_pass
 .vault_password_file

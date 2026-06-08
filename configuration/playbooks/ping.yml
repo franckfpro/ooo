@@ -1,0 +1,8 @@
+---
+- name: Validation de la connectivité avec le tenant OpenStack
+  hosts: all
+  gather_facts: no  # On désactive la collecte de facts pour aller plus vite
+  
+  tasks:
+    - name: Envoi du Ping
+      ansible.builtin.ping:
